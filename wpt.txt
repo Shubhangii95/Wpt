@@ -1,0 +1,148 @@
+productcontroller.js:
+
+const Product=require("../models/product");
+
+
+const insertProduct=async (req,resp)=>{
+   console.log(req.body);
+   const prod=new Product(req.body);
+   //add data in mongodb
+   const savedprod=await prod.save()
+   console.log("Product added")
+   resp.status(200).json({status:true,message:"data added successfully",data:savedprod})
+
+}
+
+//find all objects
+const getAllProducts=async (req,resp)=>{
+    try{
+    console.log("in getproducts")
+    const products=await Product.find({});
+    console.log(products);
+    resp.status(200).json({success:true,data:products})
+    }catch(err){
+        resp.status(400).json({success:false,message:'not found'})
+    }
+    
+}
+                                    
+//retrieve one product object
+const getByPid=async (req,resp)=>{
+    try{
+    const pid=req.params.pid;
+    const product=await Product.findOne({pid});
+    resp.status(200).json({success:true,data:product})
+    }catch(err){
+        resp.status(400).json({success:false,message:"product not found"})
+    }
+
+}
+
+//update product in mongodb and then go back getproducts
+const updateProduct=async (req,resp)=>{
+    try{
+        const pid=req.body.pid;
+        const updatedprod=await Product.findOneAndUpdate({pid},req.body)
+        resp.status(200).json({success:true,message:"updated successfully",data:updatedprod})
+    }catch(err){
+        resp.status(400).json({success:false,message:"not found"})
+    }
+     
+}
+
+const deleteproduct=async (req,resp)=>{
+     const pid=req.params.pid;
+     //delete product
+    const deleteprod= await Product.findOneAndDelete({pid},req.body)
+    resp.status(200).json({success:true,message:"deleted successfully",data:deleteprod})
+}
+
+module.exports={insertProduct,getAllProducts,getByPid,updateProduct,deleteproduct}
+
+
+
+mydatabase.js:
+
+const mongoose=require("mongoose")
+const mongoUrl="mongodb://127.0.0.1:27017/authdb";
+mongoose.connect(mongoUrl);
+const db=mongoose.connection;
+db.on("connected",()=>{
+    console.log("connected to mongodbserver")
+})
+
+db.on("error",(err)=>{
+    console.log("error occured",err);
+})
+
+db.on("disconnected",()=>{
+    console.log("disconnected from mongodbserver")
+})
+module.exports=db;
+
+
+
+models:
+product.js:
+
+const mongoose=require("mongoose");
+const productSchema=new mongoose.Schema({
+    pid:{type:Number,required:true,unique:true},
+    pname:{type:String,required:true},
+    qty:{type:Number,required:true},
+    price:{type:Number,required:true},
+    mfgdate:{type:Date,default:Date.now()},
+    expdate:{type:Date,required:true},
+    instock:{type:String,required:true}
+})
+
+module.exports=mongoose.model("Product",productSchema)
+
+
+
+routes:
+productroutes.js:
+const express=require("express");
+const router=express.Router();
+const prodcontroller=require("../controller/productcontroller");
+
+router.use(express.json())
+//read all products
+router.get("/products",prodcontroller.getAllProducts)
+
+//add a product
+router.post("/products/:pid",prodcontroller.insertProduct)
+
+//read one product 
+router.get("/products/:pid",prodcontroller.getByPid)
+
+//update one product
+router.put("/products/:pid",prodcontroller.updateProduct)
+
+//delete the product
+router.delete("/products/:pid",prodcontroller.deleteproduct)
+
+module.exports=router;
+
+
+
+app.js:
+//import all libraries
+const express=require("express")
+const app=express()
+const bodyparser=require('body-parser')
+const path=require("path")
+const proutes=require('./routes/productroutes');
+//to do the connection add following line
+const db=require('./db/mydatabase');
+const cors=require('cors');
+app.use(cors())
+//write url specific middlewares
+app.use("/api/product",proutes)
+//start the server
+app.listen(4001,()=>{
+    console.log("server started at port 4001")
+})
+
+
+
