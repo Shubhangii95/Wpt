@@ -145,4 +145,12 @@ app.listen(4001,()=>{
 })
 
 
+Steps to create a nodejs project
+
+npm init
+npm install
+npm install express
+npm install mongoose
+npm install nodemon
+npm install cors
 
