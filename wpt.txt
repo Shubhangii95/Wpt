@@ -154,3 +154,216 @@ npm install mongoose
 npm install nodemon
 npm install cors
 
+
+Que1.html:
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell My Bike</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        .form-container {
+            width: 300px;
+            border: 2px solid black;
+            padding: 20px;
+            margin: 50px auto;
+        }
+        .form-container h2 {
+            text-align: center;
+        }
+        label {
+            display: inline-block;
+            width: 100px;
+            margin-bottom: 10px;
+        }
+        input[type="text"],
+        select,
+        textarea {
+            width: 150px;
+            margin-bottom: 10px;
+        }
+        textarea {
+            height: 50px;
+        }
+        .checkbox {
+            margin-left: 105px;
+            margin-bottom: 10px;
+        }
+        .submit-btn {
+            display: block;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>Sell Bike.....</h2>
+        <form action="#" method="post">
+            <label for="ownerName">Owner Name:</label>
+            <input type="text" id="ownerName" name="ownerName" maxlength="20" required><br>
+
+            <label for="bikeName">Bike Name:</label>
+            <select id="bikeName" name="bikeName" required onchange="populateColors()">
+                <option>Select name</option>
+                <option>Honda</option>
+                <option>Yamaha</option>
+                <option>Bajaj</option>
+                <option>TVS</option>
+            </select><br>
+
+            <label for="color">Color:</label>
+            <select id="color" name="color" required>
+                <option>Select Color</option>
+                <option>Red</option>
+                <option>Black</option>
+                <option>Blue</option>
+                <option>White</option>
+            </select><br>
+
+            <label for="description">Description</label>
+            <textarea id="description" name="description" required></textarea><br>
+
+            <label for="cost">Selling Cost:</label>
+            <input type="text" id="cost" name="cost" required min="1"><br>
+
+            <div class="checkbox">
+                <label for="negotiable">Negotiable</label>
+                <input type="checkbox" id="negotiable" name="negotiable">
+
+            </div>
+            <input class="submit-btn" type="submit" value="submit">
+
+        </form>
+
+        <script>
+            function populateColors() {
+                const bike = document.getElementById("bikeName").value;
+                const colorSelect = document.getElementById("color");
+                const colorOptions = {
+                    "Activa" : ["Black", "Silver", "Red"],
+                    "Jupitor" : ["Gold", "Silver", "Yellow"],
+                    "Bajaj Scooter" : ["Blue", "Red", "White","Black"]
+
+                };
+                colorSelect.innerHTML = "";
+                if(colorOptions[bike]) {
+                    
+                }
+            }
+        </script>
+    </div>
+</body>
+</html>
+
+
+que1wpt.txt:
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Sell Your Bike</title>
+  <style>
+    label { display: block; margin-top: 10px; }
+    .error { color: red; }
+    #result { margin-top: 20px; border-top: 1px solid #ccc; padding-top: 10px; }
+  </style>
+</head>
+<body>
+
+  <h2>Bike Seller Form</h2>
+
+  <form id="bikeForm">
+    <label>Owner Name:
+      <input type="text" id="ownerName" maxlength="20" required />
+    </label>
+
+    <label>Bike Name:
+      <select id="bikeName" required onchange="populateColors()">
+        <option value="">Select</option>
+        <option value="Activa">Activa</option>
+        <option value="Jupitor">Jupitor</option>
+        <option value="Bajaj Scooter">Bajaj Scooter</option>
+      </select>
+    </label>
+
+    <label>Color:
+      <select id="color" required></select>
+    </label>
+
+    <label>Selling Cost:
+      <input type="number" id="cost" required min="1" />
+    </label>
+
+    <label>Negotiable:
+      <input type="checkbox" id="negotiable" />
+    </label>
+
+    <button type="button" onclick="validateForm()">Submit</button>
+    <p class="error" id="errorMsg"></p>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    function populateColors() {
+      const bike = document.getElementById("bikeName").value;
+      const colorSelect = document.getElementById("color");
+      const colorOptions = {
+        "Activa": ["Black", "Silver", "Red"],
+        "Jupitor": ["Gold", "Silver", "Yellow"],
+        "Bajaj Scooter": ["Blue", "Red", "White", "Black"]
+      };
+      colorSelect.innerHTML = "";
+      if (colorOptions[bike]) {
+        colorOptions[bike].forEach(color => {
+          const opt = document.createElement("option");
+          opt.text = color;
+          opt.value = color;
+          colorSelect.add(opt);
+        });
+      }
+    }
+
+    function validateForm() {
+      const ownerName = document.getElementById("ownerName").value.trim();
+      const bikeName = document.getElementById("bikeName").value;
+      const color = document.getElementById("color").value;
+      const cost = document.getElementById("cost").value;
+      const negotiable = document.getElementById("negotiable").checked;
+      const errorMsg = document.getElementById("errorMsg");
+      errorMsg.innerText = "";
+
+      // Validations
+      if (!ownerName || !bikeName || !color || !cost) {
+        errorMsg.innerText = "Please fill in all mandatory fields.";
+        return;
+      }
+      if (ownerName.length > 20) {
+        errorMsg.innerText = "Owner name must not exceed 20 characters.";
+        return;
+      }
+      if (parseFloat(cost) <= 0) {
+        errorMsg.innerText = "Selling cost must be a positive number.";
+        return;
+      }
+
+      // If all good, display the data
+      const result = `
+        <h3>Submitted Data</h3>
+        <p><strong>Owner Name:</strong> ${ownerName}</p>
+        <p><strong>Bike Name:</strong> ${bikeName}</p>
+        <p><strong>Color:</strong> ${color}</p>
+        <p><strong>Selling Cost:</strong> ₹${cost}</p>
+        <p><strong>Negotiable:</strong> ${negotiable ? "Yes" : "No"}</p>
+      `;
+      document.getElementById("result").innerHTML = result;
+    }
+  </script>
+
+</body>
+</html>
